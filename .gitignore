@@ -1,4 +1,5 @@
 .idea/
+vendor/
 *.swp
 *.iml
 *.lock
