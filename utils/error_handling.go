@@ -10,3 +10,9 @@ func CheckFatal(err error) {
 		log.WithField("error", err).Fatal("Fatal error.")
 	}
 }
+
+func CheckError(err error) {
+	if(err != nil) {
+		log.WithError(err).Error()
+	}
+}

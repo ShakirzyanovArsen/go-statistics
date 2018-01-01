@@ -16,5 +16,6 @@ func main() {
 	logging.Init()
 	address := fmt.Sprintf(":%d", config.Conf.Port)
 	log.WithField("address", address).Info("starting server")
-	utils.CheckFatal(http.ListenAndServe(address, r))
+	err := http.ListenAndServe(address, r)
+	utils.CheckFatal(err)
 }
