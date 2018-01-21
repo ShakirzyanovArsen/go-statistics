@@ -1,0 +1,82 @@
+<html>
+<head>
+{{template "head.html"}}
+    <script type="text/javascript" src="/static/js/tables.js"></script>
+    <script type="text/javascript" src="/static/js/utils.js"></script>
+    <script type="text/javascript" src="/static/js/request.js"></script>
+</head>
+<body>
+<div class="container">
+    <a class="btn btn-primary" style="margin-top: 5px" href="/" role="button">Go to main page</a>
+    <div class="row">
+        <div class="col-md form-inline form-group mt-4">
+            <label for="limit" class="mr-2">Number of jobs</label>
+            <select class="form-control" id="limit" onchange="onDateOrCountSelect()">
+                <option value="10">10</option>
+                <option value="30">30</option>
+                <option value="50">50</option>
+                <option value="50">70</option>
+                <option value="100">100</option>
+            </select>
+        </div>
+        <div class="col-md form-inline form-group mt-4">
+            <label for="dateFrom" class="mr-2">From:</label>
+            <input id="dateFrom" class="flatpickr flatpickr-input form-control input active"
+                   placeholder="Select date time..."
+                   type="text" readonly="readonly" onchange="onDateOrCountSelect()">
+        </div>
+        <div class="col-md form-inline form-group mt-4">
+            <label for="dateTo" class="mr-2">To:</label>
+            <input id="dateTo" class="flatpickr flatpickr-input form-control input active"
+                   placeholder="Select date time..."
+                   type="text" readonly="readonly" onchange="onDateOrCountSelect()">
+        </div>
+    </div>
+    <div class="row">
+        <div align="center" class="col-md">
+            <div id="result" class="loader"></div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var dateFrom = getDate("resource_date_from");
+        var dateTo = getDate("resource_date_to");
+        var lsLimit = localStorage.getItem("resource_limit");
+        if (lsLimit !== null) {
+            document.getElementById("limit").value = lsLimit
+        }
+        $("#dateFrom").flatpickr(makeConfigWithDate(dateFrom));
+        $("#dateTo").flatpickr(makeConfigWithDate(dateTo));
+        onDateOrCountSelect();
+    });
+
+    function onDateOrCountSelect() {
+        var headers = [
+            {name: "inx", tableName: "Job id"},
+            {name: "account", tableName: "Account"},
+            {name: "partition", tableName: "Partition"},
+            {name: "user", tableName: "User"},
+            {name: "time_start", tableName: "Started"},
+            {name: "time_end", tableName: "Ended"},
+            {name: "job_time", tableName: "Job time"},
+            {name: "cpu_hours", tableName: "CPU Hours▾"},
+            {name: "cpu_required", tableName: "CPU number required"}
+        ];
+        var dateFrom = document.getElementById('dateFrom').value;
+        var dateTo = document.getElementById('dateTo').value;
+        var limit = document.getElementById("limit").value;
+        localStorage.setItem("resource_date_from", dateFrom);
+        localStorage.setItem("resource_date_to", dateTo);
+        localStorage.setItem("resource_limit", limit);
+        var view = {
+            uri: '/api/job/intensive', divId: 'result', headers: headers, additionalParams: {
+                limit: limit
+            }
+        };
+        makeRequstAndPasteDataToTable(view, dateFrom, dateTo)
+    }
+
+</script>
+</html>

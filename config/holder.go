@@ -7,6 +7,14 @@ import (
 
 type Configuration struct {
 	Port int
+	Database struct{
+		Host string
+		Port int
+		Database string
+		User string
+		Password string
+		TablePrefix string
+	}
 }
 
 var Conf *Configuration

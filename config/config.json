@@ -1,3 +1,11 @@
 {
-  "Port": 8080
+  "Port": 8080,
+  "Database": {
+    "Host": "localhost",
+    "Port": 3306,
+    "Database": "slurm_acct_db",
+    "User": "root",
+    "Password": "qwerty123",
+    "TablePrefix": "triton"
+  }
 }

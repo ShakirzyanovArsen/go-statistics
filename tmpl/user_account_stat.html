@@ -1,0 +1,77 @@
+<html>
+<head>
+{{template "head.html"}}
+    <script type="text/javascript" src="/static/js/tables.js"></script>
+    <script type="text/javascript" src="/static/js/utils.js"></script>
+    <script type="text/javascript" src="/static/js/request.js"></script>
+</head>
+<body>
+<div class="container">
+    <a class="btn btn-primary" style="margin-top: 5px" href="/" role="button">Go to main page</a>
+    <h3 align="center">Job and CPU usage statistic for users and accounts</h3>
+    <div class="row">
+        <div class="col-md form-inline form-group mt-4">
+            <label for="dateFrom" class="mr-2">From:</label>
+            <input id="dateFrom" class="flatpickr flatpickr-input form-control input active"
+                   placeholder="Select date time..."
+                   type="text" readonly="readonly" onchange="onDateTimeSelect()">
+        </div>
+        <div class="col-md form-inline form-group mt-4">
+            <label for="dateTo" class="mr-2">To:</label>
+            <input id="dateTo" class="flatpickr flatpickr-input form-control input active"
+                   placeholder="Select date time..."
+                   type="text" readonly="readonly" onchange="onDateTimeSelect()">
+        </div>
+    </div>
+    <div class="row">
+        <div align="center" class="col-md">
+            <h3>Job count(users)</h3>
+            <div id="user_jobs_count" class="loader"></div>
+        </div>
+        <div align="center" class="col-md">
+            <h3>Job count(accounts)</h3>
+            <div id="account_jobs_count" class="loader"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div align="center" class="col-md">
+            <h3>CPU hours(users)</h3>
+            <div id="user_cpu_usage" class="loader"></div>
+        </div>
+        <div align="center" class="col-md">
+            <h3>CPU hours(users)</h3>
+            <div id="account_cpu_usage" class="loader"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var dateFrom =  getDate("common_stat_date_from");
+        var dateTo = getDate("common_stat_date_to");
+
+        $("#dateFrom").flatpickr(makeConfigWithDate(dateFrom));
+        $("#dateTo").flatpickr(makeConfigWithDate(dateTo));
+        onDateTimeSelect();
+    });
+
+    function onDateTimeSelect() {
+        var headers_jobs = [{name: "name", tableName: "Name"}, {name: "count", tableName: "Count"}];
+        var headers_cpu = [{name: "name", tableName: "Name"}, {name: "cpu_hours", tableName: "CPU hours"}];
+        var views = [
+            {uri: '/api/user/jobs', divId: 'user_jobs_count', headers: headers_jobs},
+            {uri: '/api/account/jobs', divId: 'account_jobs_count', headers: headers_jobs},
+            {uri: '/api/user/cpu', divId: 'user_cpu_usage', headers: headers_cpu},
+            {uri: '/api/account/cpu', divId: 'account_cpu_usage', headers: headers_cpu}
+        ];
+        var dateFrom = document.getElementById('dateFrom').value;
+        var dateTo = document.getElementById('dateTo').value;
+        localStorage.setItem("common_stat_date_from", dateFrom);
+        localStorage.setItem("common_stat_date_to", dateTo);
+        views.forEach(function (view) {
+            makeRequstAndPasteDataToTable(view, dateFrom, dateTo)
+        });
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<html>
+<head>
+{{template "head.html"}}
+    <script type="text/javascript" src="/static/js/tables.js"></script>
+    <script type="text/javascript" src="/static/js/utils.js"></script>
+    <script type="text/javascript" src="/static/js/request.js"></script>
+    <title>Slurm load</title>
+</head>
+<body>
+<div class="container">
+    <a class="btn btn-primary" style="margin-top: 5px" href="/" role="button">Go to main page</a>
+    <div class="row">
+        <div class="col-md form-inline form-group mt-4">
+            <label for="dateFrom" class="mr-2">From:</label>
+            <input id="dateFrom" class="flatpickr flatpickr-input form-control input active"
+                   placeholder="Select date time..."
+                   type="text" readonly="readonly" onchange="onDateTimeSelect()">
+        </div>
+        <div class="col-md form-inline form-group mt-4">
+            <label for="dateTo" class="mr-2">To:</label>
+            <input id="dateTo" class="flatpickr flatpickr-input form-control input active"
+                   placeholder="Select date time..."
+                   type="text" readonly="readonly" onchange="onDateTimeSelect()">
+        </div>
+    </div>
+    <div class="row">
+        <div align="center" class="col-md">
+            <h3>Job count</h3>
+            <div id="partition_jobs_count" class="loader"></div>
+        </div>
+        <div align="center" class="col-md">
+            <h3>CPU usage</h3>
+            <div id="partition_cpu_count" class="loader"></div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var dateFrom = getDate("partition_stat_date_from");
+        var dateTo = getDate("partition_stat_date_to");
+
+        $("#dateFrom").flatpickr(makeConfigWithDate(dateFrom));
+        $("#dateTo").flatpickr(makeConfigWithDate(dateTo));
+        onDateTimeSelect();
+    });
+
+    function onDateTimeSelect() {
+        var headers_jobs = [{name: "name", tableName: "Name"}, {name: "count", tableName: "Count"}];
+        var headers_cpu = [{name: "name", tableName: "Name"}, {name: "cpu_hours", tableName: "Cpu hours"}];
+        var views = [
+            {uri: '/api/partition/jobs', divId: 'partition_jobs_count', headers: headers_jobs},
+            {uri: '/api/partition/cpu', divId: 'partition_cpu_count', headers: headers_cpu}
+        ];
+        var dateFrom = document.getElementById('dateFrom').value;
+        var dateTo = document.getElementById('dateTo').value;
+        localStorage.setItem("partition_stat_date_from", dateFrom);
+        localStorage.setItem("partition_stat_date_to", dateTo);
+        views.forEach(function (view) {
+            makeRequstAndPasteDataToTable(view, dateFrom, dateTo)
+        });
+    }
+</script>
+</html>

@@ -1,8 +1,26 @@
 <html>
 <head>
-    {{template "head.html"}}
+{{template "head.html"}}
+    <title>Main page</title>
 </head>
 <body>
-<h1>Welcome!!</h1>
+<div class="container-fluid">
+    <h2 align="center">Slurm statistics</h2>
+    <div class="col-md">
+        <ul>
+            <li>
+                <a href="/user_acct_stats">Statistics of the use of the system by users or accounts
+                    (the number of running jobs, the number of involved core-hours).</a>
+            </li>
+            <li>
+                <a href="/load">Total system load by partitions and the whole cluster
+                    (number of running jobs, number of used core-hours).</a>
+            </li>
+            <li>
+                <a href="/resource_intensive_jobs">The most resource-intensive tasks.</a>
+            </li>
+        </ul>
+    </div>
+</div>
 </body>
 </html>
